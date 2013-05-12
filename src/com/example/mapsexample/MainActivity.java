@@ -1,7 +1,5 @@
 package com.example.mapsexample;
 
-import java.util.List;
-
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -13,23 +11,19 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends FragmentActivity {
 
 	private GoogleMap googleMap;
 	private SupportMapFragment fm;
-	private List<Instituto> institutosList;
-	private InstitutoDatabaseHandler instDB;
+	private MapOverlays mapOverlay;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		instDB = new InstitutoDatabaseHandler(getApplicationContext());
+
+		mapOverlay = new MapOverlays(getApplicationContext());
 		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 		
 		if(status != ConnectionResult.SUCCESS) {
@@ -45,13 +39,10 @@ public class MainActivity extends FragmentActivity {
 					
 					initializeGoogleMaps();
 					AdicionaInstitutos.addAll(getApplicationContext());
-					institutosList = instDB.getAllInstitutos();
 					
-					for (Instituto instituto : institutosList) {
-						addMarkerToMaps(instituto);
-					}
+					mapOverlay.showInstitutoByCategory(googleMap, ECategory.EXATAS);
 					
-					googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(institutosList.get(0).getLatitude(), institutosList.get(0).getLongitude())));
+					googleMap.moveCamera(CameraUpdateFactory.newLatLng(MapOverlays.USP_CENTER));
 					googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
 				}
 			};
@@ -72,10 +63,9 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 	}
-
-	protected void addMarkerToMaps(Instituto i) {
-		MarkerOptions marker = new MarkerOptions();
-		marker.position(new LatLng(i.getLatitude(), i.getLongitude())).title(i.getTitle()).snippet(i.getDescription()).icon(BitmapDescriptorFactory.fromResource(i.getIcon()));
-		googleMap.addMarker(marker);
+	
+	private void enableMyLocation(boolean enabled) {
+		googleMap.setMyLocationEnabled(enabled);
 	}
+
 }
