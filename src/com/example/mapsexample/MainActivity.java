@@ -1,6 +1,8 @@
 package com.example.mapsexample;
 
 import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
@@ -15,6 +17,12 @@ import com.google.android.gms.maps.model.Marker;
 
 public class MainActivity extends FragmentActivity {
 
+	@Override
+	public boolean onSearchRequested() {
+		Toast.makeText(getApplicationContext(), "oiii", Toast.LENGTH_SHORT).show();
+		return super.onSearchRequested();
+	}
+
 	private GoogleMap googleMap;
 	private SupportMapFragment fm;
 	private MapOverlays mapOverlay;
@@ -22,6 +30,12 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Intent intent = getIntent();
+	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+	      String query = intent.getStringExtra(SearchManager.QUERY);
+	      Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
+	    }
 
 		mapOverlay = new MapOverlays(getApplicationContext());
 		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());

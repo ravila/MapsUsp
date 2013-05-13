@@ -28,12 +28,14 @@ public class MapOverlays {
 	}
 
 	public void showAllInstitutos(GoogleMap googleMap) {
+		clearMap(googleMap);
 		for (Instituto instituto : institutosList) {
 			addMarkerToMaps(instituto, googleMap);
 		}
 	}
 	
 	public void showInstitutoByCategory(GoogleMap googleMap, ECategory category) {
+		clearMap(googleMap);
 		for (Instituto instituto : institutosList) {
 			if(instituto.getCategory() == category)
 				addMarkerToMaps(instituto, googleMap);
@@ -51,5 +53,9 @@ public class MapOverlays {
 		MarkerOptions marker = new MarkerOptions();
 		marker.position(new LatLng(i.getLatitude(), i.getLongitude())).title(i.getTitle()).snippet(i.getDescription()).icon(BitmapDescriptorFactory.fromResource(i.getIcon()));
 		googleMap.addMarker(marker);
+	}
+	
+	private void clearMap(GoogleMap googleMap) {
+		googleMap.clear();
 	}
 }
