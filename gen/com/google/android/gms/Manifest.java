@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.example.mapsexample;
+package com.google.android.gms;
 
 public final class Manifest {
     public static final class permission {

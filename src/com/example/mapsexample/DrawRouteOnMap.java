@@ -17,7 +17,8 @@ public class DrawRouteOnMap {
 		route = new PolylineOptions();
 	}
 	
-	public void drawRoute(List<LatLng> routeList, GoogleMap googleMap, int color){
+	public void drawRoute(List<LatLng> routeList, GoogleMap googleMap, int color) {
+		cleanRoutes();
 		route.addAll(routeList).width(2).color(color).geodesic(true);
 		line = googleMap.addPolyline(route);
 	}

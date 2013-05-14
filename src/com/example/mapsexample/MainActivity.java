@@ -138,8 +138,6 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public boolean onMenuItemClick(MenuItem arg0) {
 				try {
-					route8012.cleanRoutes();
-					route8022.cleanRoutes();
 					route8012.drawRoute(busRoute.getRouteList8012(), googleMap, Color.RED);
 					route8022.drawRoute(busRoute.getRouteList8022(), googleMap, Color.BLUE);
 				} catch (IOException e) {
