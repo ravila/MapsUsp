@@ -1,10 +1,19 @@
 package com.example.mapsexample;
 
+import java.io.IOException;
+
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -26,6 +35,9 @@ public class MainActivity extends FragmentActivity {
 	private GoogleMap googleMap;
 	private SupportMapFragment fm;
 	private MapOverlays mapOverlay;
+	private DrawRouteOnMap route8012;
+	private DrawRouteOnMap route8022;
+	private ParseBusRoute busRoute;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +49,10 @@ public class MainActivity extends FragmentActivity {
 	      Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
 	    }
 
-		mapOverlay = new MapOverlays(getApplicationContext());
+		mapOverlay = new MapOverlays(this);
+		route8012 = new DrawRouteOnMap();
+		route8022 = new DrawRouteOnMap();
+		busRoute = new ParseBusRoute(this);
 		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 		
 		if(status != ConnectionResult.SUCCESS) {
@@ -58,6 +73,7 @@ public class MainActivity extends FragmentActivity {
 					
 					googleMap.moveCamera(CameraUpdateFactory.newLatLng(MapOverlays.USP_CENTER));
 					googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+					
 				}
 			};
 			getSupportFragmentManager().beginTransaction().add(android.R.id.content, fm).commit();
@@ -78,8 +94,97 @@ public class MainActivity extends FragmentActivity {
 		});
 	}
 	
-	private void enableMyLocation(boolean enabled) {
+	public void enableMyLocation(boolean enabled) {
 		googleMap.setMyLocationEnabled(enabled);
+	}
+	
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	MenuItem bus_8012 = menu.add(0, Menu.NONE, Menu.NONE, "Rota 8012-10");
+    	bus_8012.setIcon(R.drawable.ic_launcher);
+    	bus_8012.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				try {
+					route8022.cleanRoutes();
+					route8012.drawRoute(busRoute.getRouteList8012(), googleMap, Color.RED);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+		});
+    	MenuItem bus_8022 = menu.add(0, Menu.NONE, Menu.NONE, "Rota 8022-10");
+    	bus_8022.setIcon(R.drawable.ic_launcher);
+    	bus_8022.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				try {
+					route8012.cleanRoutes();
+					route8022.drawRoute(busRoute.getRouteList8022(), googleMap, Color.BLUE);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+		});
+    	MenuItem both_bus = menu.add(0, Menu.NONE, Menu.NONE, "Rota 8022-10 e 8012-10");
+    	both_bus.setIcon(R.drawable.ic_launcher);
+    	both_bus.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				try {
+					route8012.cleanRoutes();
+					route8022.cleanRoutes();
+					route8012.drawRoute(busRoute.getRouteList8012(), googleMap, Color.RED);
+					route8022.drawRoute(busRoute.getRouteList8022(), googleMap, Color.BLUE);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+		});
+    	MenuItem chooseCategory = menu.add(0, Menu.NONE, Menu.NONE, "Filtrar por categoria");
+    	chooseCategory.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+				builder.setTitle("Escolha uma categoria");
+				CharSequence[] items = {"Humanas", "Exatas", "Biologicas", "Nenhuma"};
+				builder.setSingleChoiceItems(items, -1, new OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						ECategory category;
+						switch (which) {
+						case 0:
+							category = ECategory.HUMANAS;
+							break;
+						case 1:
+							category = ECategory.EXATAS;
+							break;
+						case 2:
+							category = ECategory.BIOLOGICAS;
+							break;
+						default:
+							category = ECategory.NONE;
+							break;
+						}
+						mapOverlay.showInstitutoByCategory(googleMap, category);
+						dialog.dismiss();
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+				return true;
+			}
+		});
+		return true;
 	}
 
 }

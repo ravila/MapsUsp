@@ -2,7 +2,7 @@ package com.example.mapsexample;
 
 public enum ECategory {
 
-	EXATAS, HUMANAS, BIOLOGICAS;
+	EXATAS, HUMANAS, BIOLOGICAS, NONE;
 	
 	public static ECategory getById(int id) {
 		return ECategory.values()[id];
