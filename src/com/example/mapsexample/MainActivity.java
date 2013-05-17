@@ -38,6 +38,7 @@ public class MainActivity extends FragmentActivity {
 	private DrawRouteOnMap route8012;
 	private DrawRouteOnMap route8022;
 	private ParseBusRoute busRoute;
+	private GatesUSP gatesUsp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class MainActivity extends FragmentActivity {
 		route8012 = new DrawRouteOnMap();
 		route8022 = new DrawRouteOnMap();
 		busRoute = new ParseBusRoute(this);
+		gatesUsp = new GatesUSP();
 		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 		
 		if(status != ConnectionResult.SUCCESS) {
@@ -101,8 +103,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
-    	MenuItem bus_8012 = menu.add(0, Menu.NONE, Menu.NONE, "Rota 8012-10");
-    	bus_8012.setIcon(R.drawable.ic_launcher);
+    	MenuItem bus_8012 = menu.add(0, Menu.NONE, Menu.NONE, "Rota 8012");
     	bus_8012.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
 			@Override
@@ -116,8 +117,7 @@ public class MainActivity extends FragmentActivity {
 				return true;
 			}
 		});
-    	MenuItem bus_8022 = menu.add(0, Menu.NONE, Menu.NONE, "Rota 8022-10");
-    	bus_8022.setIcon(R.drawable.ic_launcher);
+    	MenuItem bus_8022 = menu.add(0, Menu.NONE, Menu.NONE, "Rota 8022");
     	bus_8022.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
 			@Override
@@ -131,8 +131,7 @@ public class MainActivity extends FragmentActivity {
 				return true;
 			}
 		});
-    	MenuItem both_bus = menu.add(0, Menu.NONE, Menu.NONE, "Rota 8022-10 e 8012-10");
-    	both_bus.setIcon(R.drawable.ic_launcher);
+    	MenuItem both_bus = menu.add(0, Menu.NONE, Menu.NONE, "8022 e 8012");
     	both_bus.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
 			@Override
@@ -146,6 +145,34 @@ public class MainActivity extends FragmentActivity {
 				return true;
 			}
 		});
+    	MenuItem cleanRoutes = menu.add(0, Menu.NONE, Menu.NONE, "Limpar Rotas");
+    	cleanRoutes.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				route8012.cleanRoutes();
+				route8022.cleanRoutes();
+				return true;
+			}
+		});
+    	MenuItem showGates = menu.add(0, Menu.NONE, Menu.NONE, "Mostrar Portoes");
+    	showGates.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				gatesUsp.showAllGatesOnMap(googleMap);
+				return true;
+			}
+		});
+    	MenuItem removeGates = menu.add(0, Menu.NONE, Menu.NONE, "Remover Portoes");
+    	removeGates.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				gatesUsp.cleanGates();
+				return true;
+			}
+		});
     	MenuItem chooseCategory = menu.add(0, Menu.NONE, Menu.NONE, "Filtrar por categoria");
     	chooseCategory.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
@@ -153,7 +180,7 @@ public class MainActivity extends FragmentActivity {
 			public boolean onMenuItemClick(MenuItem arg0) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 				builder.setTitle("Escolha uma categoria");
-				CharSequence[] items = {"Humanas", "Exatas", "Biologicas", "Nenhuma"};
+				CharSequence[] items = {"Humanas", "Exatas", "Biologicas", "Todas", "Nenhuma"};
 				builder.setSingleChoiceItems(items, -1, new OnClickListener() {
 					
 					@Override
@@ -168,6 +195,9 @@ public class MainActivity extends FragmentActivity {
 							break;
 						case 2:
 							category = ECategory.BIOLOGICAS;
+							break;
+						case 3:
+							category = ECategory.ALL;
 							break;
 						default:
 							category = ECategory.NONE;

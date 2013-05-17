@@ -39,6 +39,10 @@ public class MapOverlays {
 	}
 	
 	public void showInstitutoByCategory(GoogleMap googleMap, ECategory category) {
+		if(category == ECategory.ALL) {
+			showAllInstitutos(googleMap);
+			return;
+		}
 		clearMap(googleMap);
 		for (Instituto instituto : institutosList) {
 			if(instituto.getCategory() == category) {
