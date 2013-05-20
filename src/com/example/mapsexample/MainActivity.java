@@ -44,12 +44,6 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		Intent intent = getIntent();
-	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-	      String query = intent.getStringExtra(SearchManager.QUERY);
-	      Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
-	    }
-
 		mapOverlay = new MapOverlays(this);
 		route8012 = new DrawRouteOnMap();
 		route8022 = new DrawRouteOnMap();
@@ -82,6 +76,19 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
+	@Override
+	protected void onNewIntent(Intent intent) {
+		setIntent(intent);
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			showToast(query);
+		}
+	}
+
+	private void showToast(String msg) {
+		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+	}
+
 	protected void initializeGoogleMaps() {
 		googleMap = fm.getMap();
 		
@@ -114,6 +121,16 @@ public class MainActivity extends FragmentActivity {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				return true;
+			}
+		});
+    	MenuItem time = menu.add(0, Menu.NONE, Menu.NONE, "Tempo");
+    	time.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				Intent i = new Intent(MainActivity.this, TimeActivity.class);
+				startActivity(i);
 				return true;
 			}
 		});
@@ -170,6 +187,15 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public boolean onMenuItemClick(MenuItem arg0) {
 				gatesUsp.cleanGates();
+				return true;
+			}
+		});
+    	MenuItem enableLocation = menu.add(0, Menu.NONE, Menu.NONE, "Mostrar/Ocultar GPS");
+    	enableLocation.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				enableMyLocation(!googleMap.isMyLocationEnabled());
 				return true;
 			}
 		});
