@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutHeader"
+    android:layout_width="fill_parent"
+    android:layout_height="50dip"
+    android:layout_alignParentTop="true"
+    android:background="@android:color/background_light"
+    android:orientation="horizontal">
+    
+    <Button
+        android:id="@+id/bShowMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name" />
+    
+    <Button
+        android:id="@+id/bShowAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/bShowMap"
+        android:text="@string/showAll" />
+    
+    <CheckBox
+        android:id="@+id/checkAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:layout_alignParentRight="true"
+        android:focusable="false" />
+
+</RelativeLayout>

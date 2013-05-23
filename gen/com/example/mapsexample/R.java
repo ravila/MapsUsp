@@ -141,24 +141,40 @@ containing a value of this type.
     public static final class drawable {
         public static final int gate=0x7f020000;
         public static final int ic_launcher=0x7f020001;
+        public static final int list_bg=0x7f020002;
+        public static final int list_bg_hover=0x7f020003;
+        public static final int list_selector=0x7f020004;
     }
     public static final class id {
-        public static final int action_settings=0x7f050008;
+        public static final int action_settings=0x7f050011;
+        public static final int bShowAll=0x7f05000b;
+        public static final int bShowMap=0x7f05000a;
+        public static final int checkAll=0x7f05000c;
+        public static final int checkBox=0x7f050010;
+        public static final int endereco=0x7f05000f;
+        public static final int header=0x7f050005;
         public static final int hybrid=0x7f050004;
-        public static final int map=0x7f050006;
+        public static final int id=0x7f05000d;
+        public static final int layoutHeader=0x7f050009;
+        public static final int map=0x7f050007;
+        public static final int name=0x7f05000e;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int satellite=0x7f050002;
         public static final int terrain=0x7f050003;
-        public static final int time=0x7f050007;
-        public static final int tv_location=0x7f050005;
+        public static final int time=0x7f050008;
+        public static final int tv_location=0x7f050006;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
-        public static final int activity_time=0x7f030001;
+        public static final int activity_instituto_list_selector=0x7f030000;
+        public static final int activity_main=0x7f030001;
+        public static final int activity_time=0x7f030002;
+        public static final int header=0x7f030003;
+        public static final int instituto_row_list=0x7f030004;
     }
     public static final class menu {
-        public static final int time=0x7f090000;
+        public static final int instituto_list_selector=0x7f090000;
+        public static final int time=0x7f090001;
     }
     public static final class string {
         public static final int action_settings=0x7f060012;
@@ -228,6 +244,8 @@ containing a value of this type.
         public static final int hello_world=0x7f060013;
         public static final int search_hint=0x7f060015;
         public static final int search_label=0x7f060014;
+        public static final int showAll=0x7f060018;
+        public static final int title_activity_instituto_list_selector=0x7f060017;
         public static final int title_activity_time=0x7f060016;
     }
     public static final class style {

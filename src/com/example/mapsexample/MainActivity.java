@@ -1,10 +1,11 @@
 package com.example.mapsexample;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -39,16 +40,19 @@ public class MainActivity extends FragmentActivity {
 	private DrawRouteOnMap route8022;
 	private ParseBusRoute busRoute;
 	private GatesUSP gatesUsp;
+	private ArrayList<Integer> institutosShowing;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		AdicionaInstitutos.addAll(getApplicationContext());
 		mapOverlay = new MapOverlays(this);
 		route8012 = new DrawRouteOnMap();
 		route8022 = new DrawRouteOnMap();
 		busRoute = new ParseBusRoute(this);
 		gatesUsp = new GatesUSP();
+		institutosShowing = new ArrayList<Integer>();
 		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 		
 		if(status != ConnectionResult.SUCCESS) {
@@ -63,9 +67,8 @@ public class MainActivity extends FragmentActivity {
 					super.onActivityCreated(b);
 					
 					initializeGoogleMaps();
-					AdicionaInstitutos.addAll(getApplicationContext());
 					
-					mapOverlay.showInstitutoByCategory(googleMap, ECategory.EXATAS);
+					//mapOverlay.showInstitutoByCategory(googleMap, ECategory.EXATAS);
 					
 					googleMap.moveCamera(CameraUpdateFactory.newLatLng(MapOverlays.USP_CENTER));
 					googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
@@ -76,19 +79,6 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
-	@Override
-	protected void onNewIntent(Intent intent) {
-		setIntent(intent);
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			showToast(query);
-		}
-	}
-
-	private void showToast(String msg) {
-		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-	}
-
 	protected void initializeGoogleMaps() {
 		googleMap = fm.getMap();
 		
@@ -131,6 +121,17 @@ public class MainActivity extends FragmentActivity {
 			public boolean onMenuItemClick(MenuItem arg0) {
 				Intent i = new Intent(MainActivity.this, TimeActivity.class);
 				startActivity(i);
+				return true;
+			}
+		});
+    	MenuItem inst = menu.add(0, Menu.NONE, Menu.NONE, "Lista");
+    	inst.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				Intent i = new Intent(MainActivity.this, InstitutoListSelectorActivity.class);
+				i.putIntegerArrayListExtra("list", institutosShowing);
+				startActivityForResult(i, 1);
 				return true;
 			}
 		});
@@ -239,6 +240,28 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 		return true;
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Toast.makeText(getApplicationContext(), "oi", Toast.LENGTH_SHORT).show();
+		institutosShowing = data.getIntegerArrayListExtra("result");
+		InstitutoDatabaseHandler db = new InstitutoDatabaseHandler(getApplicationContext());
+		List<Instituto> inst = db.getAllInstitutos();
+		List<Instituto> list = new ArrayList<Instituto>();
+
+		System.out.println("ALOOOOO");
+		for (Integer i : institutosShowing) {
+			System.out.println("CONTEM - " + i);
+		}
+		for(int i = 0; i < inst.size(); i++) {
+			if(institutosShowing.contains(i)) {
+				list.add(inst.get(i));
+			}
+		}
+		
+		mapOverlay.showListIntitutos(googleMap, list);
 	}
 
 }

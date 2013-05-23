@@ -64,6 +64,15 @@ public class InstitutoDatabaseHandler extends SQLiteOpenHelper {
         return id;
 	}
 	
+	public List<Instituto> getInstutosBySearch(String query) {
+		String selectQuery = "SELECT  * FROM " + TABLE_INSTITUTOS
+                + " WHERE " + KEY_NAME + " LIKE \'" + query + "\' ORDER BY id ASC";
+		
+		System.out.println("QUERYYY - " + selectQuery);
+        
+        return getInstitutosBySQLQuery(selectQuery);
+	}
+	
 	public List<Instituto> getAllInstitutos() {
         String selectQuery = "SELECT  * FROM " + TABLE_INSTITUTOS
                 + " ORDER BY id ASC";

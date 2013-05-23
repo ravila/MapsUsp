@@ -73,4 +73,12 @@ public class MapOverlays {
 			markerList.clear();
 		}
 	}
+
+	public void showListIntitutos(GoogleMap googleMap, List<Instituto> list) {
+		clearMap(googleMap);
+		for (Instituto instituto : list) {
+			Marker marker = addMarkerToMaps(instituto, googleMap);
+			markerList.add(marker);
+		}
+	}
 }
